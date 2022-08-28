@@ -33,7 +33,7 @@ module.exports.getCards = (req, res) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((card) => res.send(card))
-    .catch((err) => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.find' }));
+    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.find' }));
 };
 
 // удалить карточку
@@ -57,7 +57,7 @@ module.exports.deleteCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
     })
-    .catch((err) => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
 };
 
 // лайкаем карточку
@@ -85,7 +85,7 @@ module.exports.likeCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
-    .catch((err) => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
 };
 
 // дислайкаем карточку
@@ -113,5 +113,5 @@ module.exports.dislikeCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
-    .catch((err) => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
 };

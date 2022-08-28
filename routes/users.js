@@ -1,9 +1,6 @@
 // метод Router создаёт объект, на который повесим обработчики запросов к серверу
 const router = require('express').Router();
 
-// импортируем модель
-const User = require('../models/user');
-
 const {
   getUsers, createUser, getUserById, updateUser, updateAvatar,
 } = require('../controllers/users');
