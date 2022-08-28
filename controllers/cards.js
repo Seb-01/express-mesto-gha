@@ -57,7 +57,12 @@ module.exports.deleteCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
     })
-    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+      }
+      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+    });
 };
 
 // лайкаем карточку
@@ -85,7 +90,12 @@ module.exports.likeCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
-    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+      }
+      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+    });
 };
 
 // дислайкаем карточку
@@ -113,5 +123,10 @@ module.exports.dislikeCard = (req, res) => {
       }
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
-    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.findByIdAndRemove' }));
+    .catch((err) => {
+      if (err.name === 'ValidationError' || err.name === 'CastError') {
+        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+      }
+      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+    });
 };
