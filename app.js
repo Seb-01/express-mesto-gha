@@ -1,6 +1,7 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+const ERRORS = require('./utils/utils');
 
 // const router = require('./routes/users');
 
@@ -32,7 +33,7 @@ app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
 app.use('*', (req, res) => {
-  res.status(404).send('not found');
+  res.status(ERRORS.NOT_FOUND).send({ message: 'Страница не найдена' });
 });
 
 // Подключаем БД:
