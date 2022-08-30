@@ -51,7 +51,12 @@ module.exports.getUserById = (req, res) => {
 // обновляем профиль
 module.exports.updateUser = (req, res) => {
   const { name, about } = req.body;
-  User.findByIdAndUpdate(req.user._id, { name, about })
+  User.findByIdAndUpdate(req.user._id, { name, about }, {
+    // Передадим объект опций:
+    new: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true, // данные будут валидированы перед изменением
+    upsert: false, // если пользователь не найден, он будет создан
+  })
     .then((user) => {
       if (user) {
         return res.send({
@@ -74,7 +79,12 @@ module.exports.updateUser = (req, res) => {
 // обновляем аватар
 module.exports.updateAvatar = (req, res) => {
   const { avatar } = req.body;
-  User.findByIdAndUpdate(req.user._id, { avatar })
+  User.findByIdAndUpdate(req.user._id, { avatar }, {
+    // Передадим объект опций:
+    new: true, // обработчик then получит на вход обновлённую запись
+    runValidators: true, // данные будут валидированы перед изменением
+    upsert: false, // если пользователь не найден, он будет создан
+  })
     .then((user) => {
       if (user) {
         return res.send({
