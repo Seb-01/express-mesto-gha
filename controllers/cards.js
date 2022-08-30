@@ -21,7 +21,7 @@ module.exports.createCard = (req, res) => {
       createdAt: card.createdAt,
     }))
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'ValidationError') {
         return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
       }
       return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
@@ -58,7 +58,7 @@ module.exports.deleteCard = (req, res) => {
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
       }
       return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
@@ -91,7 +91,7 @@ module.exports.likeCard = (req, res) => {
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
       }
       return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
@@ -124,7 +124,7 @@ module.exports.dislikeCard = (req, res) => {
       return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
     })
     .catch((err) => {
-      if (err.name === 'ValidationError' || err.name === 'CastError') {
+      if (err.name === 'CastError') {
         return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
       }
       return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
