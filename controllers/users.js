@@ -1,10 +1,23 @@
+const bcrypt = require('bcryptjs'); // импортируем bcrypt
 const ERRORS = require('../utils/utils');
 const User = require('../models/user');
 
 // создает пользователя
 module.exports.createUser = (req, res) => {
-  const { name, about, avatar } = req.body;
-  User.create({ name, about, avatar })
+  // значения по умолчанию используем для необязательных полей
+  const {
+    name,
+    about,
+    avatar,
+    email,
+    password,
+  } = req.body;
+
+  // хешируем пароль
+  bcrypt.hash(password, 10)
+    .then((hash) => User.create({
+      name, about, avatar, email, hash,
+    }))
     .then((user) => res.send({
       name: user.name,
       about: user.about,
@@ -16,6 +29,20 @@ module.exports.createUser = (req, res) => {
         return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
       }
       return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+    });
+};
+
+// контроллер login: получает из запроса почту и пароль и проверяет их
+module.exports.login = (req, res) => {
+  const { email, password } = req.body;
+
+  User.findOne({ email })
+    .then((user) => {
+      if (!user) {
+      // пользователь с такой почтой не найден
+      }
+
+    // пользователь найден
     });
 };
 

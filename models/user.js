@@ -4,19 +4,29 @@ const userSchema = new mongoose.Schema(
   {
     name: { // у пользователя есть имя — опишем требования к имени в схеме:
       type: String, // имя — это строка
-      required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+      default: 'Жак-Ив Кусто',
       minlength: 2, // минимальная длина имени — 2 символа
       maxlength: 30, // а максимальная — 30 символов
     },
     about: {
       type: String,
-      required: true,
+      default: 'Исследователь',
       minlength: 2,
       maxlength: 30,
     },
     avatar: {
       type: String,
-      required: true,
+      default: 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    },
+    email: {
+      type: String,
+      required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+      unique: true,
+    },
+    password: {
+      type: String,
+      required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
+      minlength: 8,
     },
 
   },

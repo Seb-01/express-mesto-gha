@@ -1,6 +1,8 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
+// Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
+const { errors } = require('celebrate');
 const ERRORS = require('./utils/utils');
 
 // const router = require('./routes/users');
@@ -35,6 +37,9 @@ app.use('/cards', require('./routes/cards'));
 app.use('*', (req, res) => {
   res.status(ERRORS.NOT_FOUND).send({ message: 'Страница не найдена' });
 });
+
+// обработчики ошибок
+app.use(errors()); // обработчик ошибок celebrate
 
 // Подключаем БД:
 // подключаемся к серверу mongo
