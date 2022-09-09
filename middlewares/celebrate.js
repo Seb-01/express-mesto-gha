@@ -1,5 +1,5 @@
 // Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
-const { /* errors, */ celebrate, Joi } = require('celebrate');
+const { celebrate, Joi } = require('celebrate');
 const imgUrlRegx = require('../utils/regexpression');
 
 // проверка роутера при запросе сервера на создание пользователя
