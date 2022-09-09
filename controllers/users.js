@@ -11,9 +11,9 @@ const { NotFoundError } = require('../errors/not-found');
 module.exports.createUser = (req, res, next) => {
   // значения по умолчанию используем для необязательных полей
   const {
-    name,
-    about,
-    avatar,
+    name = 'Жак-Ив Кусто',
+    about = 'Исследователь',
+    avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
     email,
     password,
   } = req.body;
