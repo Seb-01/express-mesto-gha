@@ -1,9 +1,13 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const bodyParser = require('body-parser');
-// Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
+// обработчик ошибок celebrate
 const { errors } = require('celebrate');
+
 const ERRORS = require('./utils/utils');
+const { login, createUser } = require('./controllers/users');
+const { validateUserCreate } = require('./middlewares/celebrate');
+const auth = require('./middlewares/auth');
 
 // const router = require('./routes/users');
 
@@ -12,23 +16,15 @@ const { PORT = 3000 } = process.env;
 
 const app = express();
 
-app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
-});
-
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-// добавляем в каждый запрос объект user, из него берем id user в контроллере создания карточки:
-// Добавляем ДО роутеров!
-app.use((req, res, next) => {
-  req.user = {
-    _id: '6303ec82273ee89bb360edf4',
-  };
+// роут для логина и регистрации
+app.post('/signin', login);
+app.post('/signup', validateUserCreate, createUser);
 
-  next();
-});
+// обеспечиваем авторизацию при запросах ниже
+app.use(auth);
 
 // роутинг организуем
 app.use('/users', require('./routes/users'));
@@ -40,6 +36,26 @@ app.use('*', (req, res) => {
 
 // обработчики ошибок
 app.use(errors()); // обработчик ошибок celebrate
+
+// здесь централизовано обрабатываем все ошибки
+app.use((err, req, res) => {
+  // если у ошибки нет статуса, выставляем 500
+  const { statusCode = 500, message } = err;
+
+  res
+    .status(statusCode)
+    .send({
+      // проверяем статус и выставляем сообщение в зависимости от него
+      message: statusCode === 500
+        ? 'На сервере произошла ошибка'
+        : message,
+    });
+});
+
+app.listen(PORT, () => {
+  // Если всё работает, консоль покажет, какой порт приложение слушает
+  console.log(`App listening on port ${PORT}`);
+});
 
 // Подключаем БД:
 // подключаемся к серверу mongo

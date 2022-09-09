@@ -38,30 +38,38 @@ module.exports.getCards = (req, res) => {
 
 // удалить карточку
 module.exports.deleteCard = (req, res) => {
-  Card.findByIdAndRemove(req.params.cardId)
+  // найдем карточку для начала
+  Card.findById(req.params.cardId)
     .then((card) => {
       if (card) {
-        return res.send({
-          likes: card.likes,
-          _id: card._id,
-          name: card.name,
-          link: card.link,
-          owner: {
-            name: card.owner.name,
-            about: card.owner.about,
-            avatar: card.owner.avatar,
-            _id: card.owner._id,
-          },
-          createdAt: card.createdAt,
-        });
+        if (card.owner._id === req.user._id) { // если это карточка принадлежит пользователю
+          Card.findByIdAndRemove(req.params.cardId)
+            .then((delCard) => {
+              if (delCard) {
+                return res.send({
+                  likes: delCard.likes,
+                  _id: delCard._id,
+                  name: delCard.name,
+                  link: delCard.link,
+                  owner: {
+                    name: delCard.owner.name,
+                    about: delCard.owner.about,
+                    avatar: delCard.owner.avatar,
+                    _id: delCard.owner._id,
+                  },
+                  createdAt: delCard.createdAt,
+                });
+              }
+              return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
+            })
+            .catch((err) => {
+              if (err.name === 'CastError') {
+                return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+              }
+              return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+            });
+        }
       }
-      return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
-    })
-    .catch((err) => {
-      if (err.name === 'CastError') {
-        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
-      }
-      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
     });
 };
 

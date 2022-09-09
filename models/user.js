@@ -1,4 +1,5 @@
 const mongoose = require('mongoose');
+const validator = require('validator');
 
 const userSchema = new mongoose.Schema(
   {
@@ -22,11 +23,16 @@ const userSchema = new mongoose.Schema(
       type: String,
       required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
       unique: true,
+      validate: {
+        validator: (email) => validator.isEmail(email),
+        message: 'Неправильный формат email!',
+      },
     },
     password: {
       type: String,
       required: true, // оно должно быть у каждого пользователя, так что имя — обязательное поле
       minlength: 8,
+      select: false, // необходимо добавить поле select чтобы API не возвращал хеш пароля
     },
 
   },
