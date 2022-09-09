@@ -4,12 +4,10 @@ const bodyParser = require('body-parser');
 // обработчик ошибок celebrate
 const { errors } = require('celebrate');
 
-const ERRORS = require('./utils/utils');
+const { NotFoundError } = require('./errors/not-found');
 const { login, createUser } = require('./controllers/users');
 const { validateUserCreate } = require('./middlewares/celebrate');
 const auth = require('./middlewares/auth');
-
-// const router = require('./routes/users');
 
 // Слушаем 3000 порт
 const { PORT = 3000 } = process.env;
@@ -30,8 +28,8 @@ app.use(auth);
 app.use('/users', require('./routes/users'));
 app.use('/cards', require('./routes/cards'));
 
-app.use('*', (req, res) => {
-  res.status(ERRORS.NOT_FOUND).send({ message: 'Страница не найдена' });
+app.use('*', (req, res, next) => {
+  next(new NotFoundError('Страница не найдена!'));
 });
 
 // обработчики ошибок

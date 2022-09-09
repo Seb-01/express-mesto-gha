@@ -1,8 +1,10 @@
-const ERRORS = require('../utils/utils');
 const Card = require('../models/card');
+const { BadRequestError } = require('../errors/bad-request');
+const { InternalServerError } = require('../errors/internal-server');
+const { NotFoundError } = require('../errors/not-found');
 
 // создает карточку
-module.exports.createCard = (req, res) => {
+module.exports.createCard = (req, res, next) => {
   const { name, link } = req.body;
   const ownerId = req.user._id;
 
@@ -22,22 +24,22 @@ module.exports.createCard = (req, res) => {
     }))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+        next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
     });
 };
 
 // возвращает все карточки
-module.exports.getCards = (req, res) => {
+module.exports.getCards = (req, res, next) => {
   Card.find({})
     .populate(['owner', 'likes'])
     .then((card) => res.send(card))
-    .catch(() => res.status(ERRORS.INTERNAL_SERVER).send({ message: 'Произошла ошибка Card.find' }));
+    .catch(() => next(new InternalServerError('Произошла внутрення ошибка сервера!')));
 };
 
 // удалить карточку
-module.exports.deleteCard = (req, res) => {
+module.exports.deleteCard = (req, res, next) => {
   // найдем карточку для начала
   Card.findById(req.params.cardId)
     .then((card) => {
@@ -46,7 +48,7 @@ module.exports.deleteCard = (req, res) => {
           Card.findByIdAndRemove(req.params.cardId)
             .then((delCard) => {
               if (delCard) {
-                return res.send({
+                res.send({
                   likes: delCard.likes,
                   _id: delCard._id,
                   name: delCard.name,
@@ -60,13 +62,13 @@ module.exports.deleteCard = (req, res) => {
                   createdAt: delCard.createdAt,
                 });
               }
-              return res.status(ERRORS.NOT_FOUND).send({ message: 'Произошла ошибка: карточка с таким _id не найдена' });
+              next(new NotFoundError('Произошла ошибка: карточка с таким id не найдена!'));
             })
             .catch((err) => {
               if (err.name === 'CastError') {
-                return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+                next(new BadRequestError('Произошла ошибка: некорректные данные!'));
               }
-              return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+              next(new InternalServerError('Произошла внутрення ошибка сервера!'));
             });
         }
       }
@@ -74,7 +76,7 @@ module.exports.deleteCard = (req, res) => {
 };
 
 // лайкаем карточку
-module.exports.likeCard = (req, res) => {
+module.exports.likeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $addToSet: { likes: req.user._id } }, // добавить _id в массив, если его там нет
@@ -82,7 +84,7 @@ module.exports.likeCard = (req, res) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({
+        res.send({
           likes: card.likes,
           _id: card._id,
           name: card.name,
@@ -96,18 +98,18 @@ module.exports.likeCard = (req, res) => {
           createdAt: card.createdAt,
         });
       }
-      return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+      next(new NotFoundError('Произошла ошибка: карточка с таким id не найдена!'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+        next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
     });
 };
 
 // дислайкаем карточку
-module.exports.dislikeCard = (req, res) => {
+module.exports.dislikeCard = (req, res, next) => {
   Card.findByIdAndUpdate(
     req.params.cardId,
     { $pull: { likes: req.user._id } }, // убрать _id из массива
@@ -115,7 +117,7 @@ module.exports.dislikeCard = (req, res) => {
   )
     .then((card) => {
       if (card) {
-        return res.send({
+        res.send({
           likes: card.likes,
           _id: card._id,
           name: card.name,
@@ -129,12 +131,12 @@ module.exports.dislikeCard = (req, res) => {
           createdAt: card.createdAt,
         });
       }
-      return res.status(ERRORS.NOT_FOUND).send({ message: 'Карточка с указанным _id не найдена' });
+      next(new NotFoundError('Произошла ошибка: карточка с таким id не найдена!'));
     })
     .catch((err) => {
       if (err.name === 'CastError') {
-        return res.status(ERRORS.BAD_REQUEST).send({ message: 'Произошла ошибка: некорректные данные' });
+        next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      return res.status(ERRORS.INTERNAL_SERVER).send({ message: err.message });
+      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
     });
 };
