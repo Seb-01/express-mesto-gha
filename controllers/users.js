@@ -78,11 +78,14 @@ module.exports.login = (req, res, next) => {
 
 // возвращает всех пользователей
 module.exports.getUsers = (req, res, next) => {
-  // если здесь пусто - значит авторизация не прошла
-  if (!req.user) next(new UnAuthoRizedError('Неправильные почта или пароль!'));
-  User.find({})
+  // // если здесь пусто - значит авторизация не прошла
+  // if (!req.user) next(new UnAuthoRizedError('Неправильные почта или пароль!'));
+  // User.find({})
+  //   .then((users) => res.send(users))
+  //   .catch(() => next(new InternalServerError('Произошла внутрення ошибка сервера!')));
+  User.find({}, { password: 0 })
     .then((users) => res.send(users))
-    .catch(() => next(new InternalServerError('Произошла внутрення ошибка сервера!')));
+    .catch(next);
 };
 
 // возвращает пользователя по _id
