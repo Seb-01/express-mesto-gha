@@ -1,10 +1,10 @@
 // Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
-const { celebrate, Joi } = require('celebrate');
+const { celebrate, Joi, Segments } = require('celebrate');
 const imgUrlRegx = require('../utils/regexpression');
 
 // проверка роутера при запросе сервера на создание пользователя
 const validateUserCreate = celebrate({
-  body: Joi.object().keys({
+  [Segments.BODY]: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),

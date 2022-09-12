@@ -1,42 +1,55 @@
 const bcrypt = require('bcryptjs'); // импортируем bcrypt
 const jwt = require('jsonwebtoken'); // импортируем модуль jsonwebtoken
 const User = require('../models/user');
-const { BadRequestError } = require('../errors/bad-request');
-const { InternalServerError } = require('../errors/internal-server');
-const { DuplicateError } = require('../errors/duplicate-uniq-dbfield');
-const { UnAuthoRizedError } = require('../errors/unauthorized');
-const { NotFoundError } = require('../errors/not-found');
+const BadRequestError = require('../errors/bad-request');
+const InternalServerError = require('../errors/internal-server');
+const DuplicateError = require('../errors/duplicate-uniq-dbfield');
+const UnAuthoRizedError = require('../errors/unauthorized');
+const NotFoundError = require('../errors/not-found');
 
 // создает пользователя
 module.exports.createUser = (req, res, next) => {
+  console.log(req.body);
+  // console.log(req);
   // значения по умолчанию используем для необязательных полей
   const {
-    name = 'Жак-Ив Кусто',
-    about = 'Исследователь',
-    avatar = 'https://pictures.s3.yandex.net/resources/jacques-cousteau_1604399756.png',
+    name,
+    about,
+    avatar,
     email,
     password,
   } = req.body;
 
+  console.log(name);
+  console.log(about);
+
   // хешируем пароль
   bcrypt.hash(password, 10)
-    .then((hash) => User.create({
-      name, about, avatar, email, hash,
-    }))
-    .then((user) => res.send({
-      name: user.name,
-      about: user.about,
-      avatar: user.avatar,
-      _id: user.id,
-    }))
+    .then((hash) => {
+      console.log(hash);
+      User.create({
+        name, about, avatar, email, password: hash,
+      });
+    })
+    .then((user) => {
+      console.log(user);
+      res.send({
+        name: user.name,
+        about: user.about,
+        avatar: user.avatar,
+        email: user.email,
+      });
+    })
     .catch((err) => {
+      console.log(err);
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
-      }
-      if (err.code === 11000) {
+      } else if (err.code === 11000) {
         next(new DuplicateError('Произошла ошибка: пользователь с таким email уже существует!'));
+      } else {
+        // отправляем ошибку в централизованный обработчик
+        next(err);
       }
-      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
     });
 };
 

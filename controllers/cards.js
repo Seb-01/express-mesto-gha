@@ -1,7 +1,7 @@
 const Card = require('../models/card');
-const { BadRequestError } = require('../errors/bad-request');
-const { InternalServerError } = require('../errors/internal-server');
-const { NotFoundError } = require('../errors/not-found');
+const BadRequestError = require('../errors/bad-request');
+const InternalServerError = require('../errors/internal-server');
+const NotFoundError = require('../errors/not-found');
 
 // создает карточку
 module.exports.createCard = (req, res, next) => {
