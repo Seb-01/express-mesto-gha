@@ -25,7 +25,8 @@ const validateUserLogin = celebrate({
       if (!isCelebrate(err)) {
         return next(err);
       }
-      return res.status(401).send({ message: 'Неправильные почта или пароль!' });
+      console.log(err);
+      return res.status(500).send({ message: 'Internal Server Error' });
     }),
     password: Joi.string().required().min(8),
   }),
