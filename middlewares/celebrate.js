@@ -15,7 +15,7 @@ const validateUserCreate = celebrate({
 
 // логин
 const validateUserLogin = celebrate({
-  body: Joi.object().keys({
+  [Segments.BODY]: Joi.object().keys({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
@@ -23,7 +23,7 @@ const validateUserLogin = celebrate({
 
 // Создание карточки
 const validateCardCreate = celebrate({
-  body: Joi.object().keys({
+  [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
     link: Joi.string().required().pattern(imgUrlRegx),
   }),
