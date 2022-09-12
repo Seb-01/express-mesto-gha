@@ -1,5 +1,5 @@
 const jwt = require('jsonwebtoken');
-const { UnAuthoRizedError } = require('../errors/unauthorized');
+const UnAuthoRizedError = require('../errors/unauthorized');
 
 // Авторзационный миддлевеар
 // верифицируем токен из заголовков. Если с токеном всё в порядке, мидлвэр должен

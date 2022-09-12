@@ -41,7 +41,7 @@ app.use('*', (req, res, next) => {
 app.use(errors()); // обработчик ошибок celebrate
 
 // здесь централизовано обрабатываем все ошибки
-app.use((err, req, res) => {
+app.use((err, req, res, next) => {
   // если у ошибки нет статуса, выставляем 500
   const { statusCode = 500, message } = err;
 
@@ -53,6 +53,8 @@ app.use((err, req, res) => {
         ? 'На сервере произошла ошибка'
         : message,
     });
+
+  next();
 });
 
 app.listen(PORT, () => {

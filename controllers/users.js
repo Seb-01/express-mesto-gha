@@ -23,17 +23,26 @@ module.exports.createUser = (req, res, next) => {
   console.log(name);
   console.log(about);
 
-  // хешируем пароль
-  bcrypt.hash(password, 10)
+  // сначала мы ищем юзера в базе, если он уже есть - выкидываем ошибку,
+  // что он уже существует, иначе создаем!
+  User.findOne({ email })
+    .then((user) => {
+      if (user) {
+        throw new DuplicateError('Произошла ошибка: пользователь с таким email уже существует!');
+      } else {
+        // работаем дальше: хешируем пароль
+        return bcrypt.hash(password, 10);
+      }
+    })
     .then((hash) => {
       console.log(hash);
-      User.create({
+      return User.create({
         name, about, avatar, email, password: hash,
       });
     })
     .then((user) => {
       console.log(user);
-      res.send({
+      res.status(201).send({
         name: user.name,
         about: user.about,
         avatar: user.avatar,
@@ -41,7 +50,7 @@ module.exports.createUser = (req, res, next) => {
       });
     })
     .catch((err) => {
-      console.log(err);
+      console.log(`Got error: ${err}!`);
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       } else if (err.code === 11000) {
