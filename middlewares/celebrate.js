@@ -1,5 +1,7 @@
 // Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
-const { celebrate, Joi, Segments } = require('celebrate');
+const {
+  celebrate, Joi, Segments, isCelebrate,
+} = require('celebrate');
 const imgUrlRegx = require('../utils/regexpression');
 // const UnAuthoRizedError = require('../errors/unauthorized');
 
@@ -19,7 +21,12 @@ const validateUserLogin = celebrate({
   [Segments.BODY]: Joi.object().keys({
     // email: Joi.string().required().email().error
     // (new UnAuthoRizedError('Неправильные почта или пароль!')),
-    email: Joi.string().required().email().error({ statusCode: 401, message: 'Неправильные почта или пароль!' }),
+    email: Joi.string().required().email().error((err, req, res, next) => {
+      if (!isCelebrate(err)) {
+        return next(err);
+      }
+      return res.status(401).send({ message: 'Неправильные почта или пароль!' });
+    }),
     password: Joi.string().required().min(8),
   }),
 });
