@@ -6,7 +6,7 @@ const { errors } = require('celebrate');
 
 const { NotFoundError } = require('./errors/not-found');
 const { login, createUser } = require('./controllers/users');
-const { validateUserCreate } = require('./middlewares/celebrate');
+const { validateUserCreate, validateUserLogin } = require('./middlewares/celebrate');
 const auth = require('./middlewares/auth');
 
 // Слушаем 3000 порт
@@ -23,7 +23,7 @@ app.use(bodyParser.urlencoded({ extended: true }));
 
 // роут для логина и регистрации
 // console.log(validateUserCreate);
-app.post('/signin', login);
+app.post('/signin', validateUserLogin, login);
 app.post('/signup', validateUserCreate, createUser);
 
 // обеспечиваем авторизацию при запросах ниже
