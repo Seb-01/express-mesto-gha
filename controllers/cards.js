@@ -2,6 +2,7 @@ const Card = require('../models/card');
 const BadRequestError = require('../errors/bad-request');
 const InternalServerError = require('../errors/internal-server');
 const NotFoundError = require('../errors/not-found');
+const PermissionError = require('../errors/permission');
 
 // создает карточку
 module.exports.createCard = (req, res, next) => {
@@ -41,10 +42,17 @@ module.exports.getCards = (req, res, next) => {
 // удалить карточку
 module.exports.deleteCard = (req, res, next) => {
   // найдем карточку для начала
+  console.log(req.params.cardId);
   Card.findById(req.params.cardId)
     .then((card) => {
+      console.log(card);
       if (card) {
-        if (card.owner._id === req.user._id) { // если это карточка принадлежит пользователю
+        console.log(card.owner._id);
+        console.log(req.user._id);
+        console.log(card.owner._id.valueOf() === req.user._id);
+        // если это карточка принадлежит пользователю
+        // valueOf() потому что card.owner._id = new ObjectId("631efb509e70fef49edc57aa")
+        if (card.owner._id.valueOf() === req.user._id) {
           Card.findByIdAndRemove(req.params.cardId)
             .then((delCard) => {
               if (delCard) {
@@ -70,7 +78,11 @@ module.exports.deleteCard = (req, res, next) => {
               }
               next(new InternalServerError('Произошла внутрення ошибка сервера!'));
             });
+        } else {
+          next(new PermissionError('Удалять можно только свои карточки!'));
         }
+      } else {
+        next(new NotFoundError('Произошла ошибка: карточка с таким id не найдена!'));
       }
     });
 };
