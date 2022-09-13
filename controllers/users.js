@@ -103,7 +103,7 @@ module.exports.login = (req, res, next) => {
 module.exports.getUsers = (req, res, next) => {
   User.find({})
     .then((users) => res.send(users))
-    .catch(() => next(new InternalServerError('Произошла внутрення ошибка сервера!')));
+    .catch(() => next());
 };
 
 // возвращает пользователя по _id
@@ -125,7 +125,7 @@ module.exports.getUserById = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
+      next(new InternalServerError('Произошла внутренняя ошибка сервера!'));
     });
 };
 
@@ -148,7 +148,7 @@ module.exports.getCurrentUser = (req, res, next) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
+      next(new InternalServerError('Произошла внутренняя ошибка сервера!'));
     });
 };
 
@@ -176,7 +176,7 @@ module.exports.updateUser = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
+      next(new InternalServerError('Произошла внутренняя ошибка сервера!'));
     });
 };
 
@@ -204,6 +204,6 @@ module.exports.updateAvatar = (req, res, next) => {
       if (err.name === 'ValidationError' || err.name === 'CastError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
       }
-      next(new InternalServerError('Произошла внутрення ошибка сервера!'));
+      next(new InternalServerError('Произошла внутренняя ошибка сервера!'));
     });
 };

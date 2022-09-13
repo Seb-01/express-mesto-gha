@@ -4,7 +4,7 @@ const bodyParser = require('body-parser');
 // обработчик ошибок celebrate
 const { errors } = require('celebrate');
 
-const { NotFoundError } = require('./errors/not-found');
+const NotFoundError = require('./errors/not-found');
 const { login, createUser } = require('./controllers/users');
 const { validateUserCreate, validateUserLogin } = require('./middlewares/celebrate');
 const auth = require('./middlewares/auth');
