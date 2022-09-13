@@ -38,7 +38,7 @@ app.use('*', (req, res, next) => {
 });
 
 // обработчики ошибок
-// app.use(errors()); // обработчик ошибок celebrate
+app.use(errors()); // обработчик ошибок celebrate
 
 // здесь централизовано обрабатываем все ошибки
 app.use((err, req, res, next) => {

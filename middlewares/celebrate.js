@@ -1,9 +1,9 @@
 // Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
 const {
-  celebrate, Joi, Segments, isCelebrate,
+  celebrate, Joi, Segments, // isCelebrate,
 } = require('celebrate');
 const imgUrlRegx = require('../utils/regexpression');
-const UnAuthoRizedError = require('../errors/unauthorized');
+// const UnAuthoRizedError = require('../errors/unauthorized');
 
 // проверка роутера при запросе сервера на создание пользователя
 const validateUserCreate = celebrate({
