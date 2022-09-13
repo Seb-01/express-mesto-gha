@@ -138,6 +138,7 @@ module.exports.getCurrentUser = (req, res, next) => {
           name: user.name,
           about: user.about,
           avatar: user.avatar,
+          email: user.email,
           _id: user.id,
         });
       }
@@ -151,7 +152,7 @@ module.exports.getCurrentUser = (req, res, next) => {
     });
 };
 
-// обновляем профиль
+// обновляем профиль: имя и профессиию
 module.exports.updateUser = (req, res, next) => {
   const { name, about } = req.body;
   User.findByIdAndUpdate(req.user._id, { name, about }, {

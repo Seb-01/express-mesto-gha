@@ -1,6 +1,6 @@
 // метод Router создаёт объект, на который повесим обработчики запросов к серверу
 const router = require('express').Router();
-const { validateGetUserById } = require('../middlewares/celebrate');
+const { validateGetUserById, validateUserUpdate } = require('../middlewares/celebrate');
 
 const {
   getUsers, getCurrentUser, getUserById, updateUser, updateAvatar,
@@ -9,7 +9,7 @@ const {
 router.get('/', getUsers);
 router.get('/me', getCurrentUser); // получение информации о текущем пользователе
 router.get('/:userId', validateGetUserById, getUserById);
-router.patch('/me', updateUser);
-router.patch('/me/avatar', updateAvatar);
+router.patch('/me', validateUserUpdate, updateUser);
+router.patch('/me/avatar', validateUserUpdate, updateAvatar);
 
 module.exports = router;

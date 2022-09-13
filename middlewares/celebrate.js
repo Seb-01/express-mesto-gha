@@ -16,6 +16,15 @@ const validateUserCreate = celebrate({
   }),
 });
 
+// проверка роутера обновлении данных пользователя
+const validateUserUpdate = celebrate({
+  [Segments.BODY]: Joi.object().keys({
+    name: Joi.string().min(2).max(30),
+    avatar: Joi.string().pattern(imgUrlRegx),
+    about: Joi.string().min(2).max(30),
+  }),
+});
+
 // логин
 const validateUserLogin = celebrate({
   [Segments.BODY]: Joi.object().keys({
@@ -51,10 +60,19 @@ const validateGetUserById = celebrate({
   }),
 });
 
+// Добавление лайка (валидация id карточки)
+const validateCardLikeById = celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    cardId: Joi.string().alphanum().length(24),
+  }),
+});
+
 // отправка на экспорт
 module.exports = {
   validateUserCreate,
   validateUserLogin,
   validateCardCreate,
   validateGetUserById,
+  validateUserUpdate,
+  validateCardLikeById,
 };
