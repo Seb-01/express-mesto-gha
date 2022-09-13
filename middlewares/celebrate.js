@@ -44,9 +44,17 @@ const validateCardCreate = celebrate({
   }),
 });
 
+// получение пользователя по id
+const validateGetUserById = celebrate({
+  [Segments.PARAMS]: Joi.object().keys({
+    userId: Joi.string().alphanum().length(24),
+  }),
+});
+
 // отправка на экспорт
 module.exports = {
   validateUserCreate,
   validateUserLogin,
   validateCardCreate,
+  validateGetUserById,
 };

@@ -47,6 +47,7 @@ module.exports.createUser = (req, res, next) => {
         about: user.about,
         avatar: user.avatar,
         email: user.email,
+        id: user._id,
       });
     })
     .catch((err) => {
@@ -114,6 +115,7 @@ module.exports.getUserById = (req, res, next) => {
           name: user.name,
           about: user.about,
           avatar: user.avatar,
+          email: user.email,
           _id: user.id,
         });
       }
