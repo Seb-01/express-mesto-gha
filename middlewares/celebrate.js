@@ -1,9 +1,18 @@
+// A library of string validators and sanitizers.
+const validator = require('validator');
+
 // Чтобы отправить клиенту ошибку, в celebrate есть специальный мидлвэр — errors
 const {
   celebrate, Joi, Segments, // isCelebrate,
 } = require('celebrate');
-const imgUrlRegx = require('../utils/regexpression');
-// const UnAuthoRizedError = require('../errors/unauthorized');
+
+// const imgUrlRegx = require('../utils/regexpression');
+
+const urlValidator = (value) => {
+  const result = validator.isURL(value);
+  if (result) return value;
+  throw new Error('URL validation err');
+};
 
 // проверка роутера при запросе сервера на создание пользователя
 const validateUserCreate = celebrate({
@@ -11,7 +20,8 @@ const validateUserCreate = celebrate({
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
     name: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(imgUrlRegx),
+    // avatar: Joi.string().pattern(imgUrlRegx),
+    avatar: Joi.string().custom(urlValidator),
     about: Joi.string().min(2).max(30),
   }),
 });
@@ -20,7 +30,8 @@ const validateUserCreate = celebrate({
 const validateUserUpdate = celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().min(2).max(30),
-    avatar: Joi.string().pattern(imgUrlRegx),
+    // avatar: Joi.string().pattern(imgUrlRegx),
+    avatar: Joi.string().custom(urlValidator),
     about: Joi.string().min(2).max(30),
   }),
 });
@@ -28,18 +39,6 @@ const validateUserUpdate = celebrate({
 // логин
 const validateUserLogin = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    // email: Joi.string().required().email().error
-    // (new UnAuthoRizedError('Неправильные почта или пароль!')),
-    // email: Joi.string().required().email().error((err, req, res, next) => {
-    //   if (isCelebrate(err)) {
-    //     console.log('from celebrate!');
-    //     return res.send({
-    //       statusCode: 409,
-    //       message: 'Неправильные email или пароль!',
-    //     });
-    //   }
-    //   return next(err);
-    // }),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
@@ -49,7 +48,8 @@ const validateUserLogin = celebrate({
 const validateCardCreate = celebrate({
   [Segments.BODY]: Joi.object().keys({
     name: Joi.string().required().min(2).max(30),
-    link: Joi.string().required().pattern(imgUrlRegx),
+    // link: Joi.string().required().pattern(imgUrlRegx),
+    link: Joi.string().required().custom(urlValidator),
   }),
 });
 
