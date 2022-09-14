@@ -9,9 +9,6 @@ const { login, createUser } = require('./controllers/users');
 const { validateUserCreate, validateUserLogin } = require('./middlewares/celebrate');
 const auth = require('./middlewares/auth');
 
-// Слушаем 3000 порт
-const { PORT = 3000 } = process.env;
-
 const app = express();
 
 // Подключаем БД:
@@ -57,7 +54,4 @@ app.use((err, req, res, next) => {
   next();
 });
 
-app.listen(PORT, () => {
-  // Если всё работает, консоль покажет, какой порт приложение слушает
-  console.log(`App listening on port ${PORT}`);
-});
+module.exports = app;

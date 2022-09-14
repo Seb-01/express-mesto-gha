@@ -10,19 +10,7 @@ module.exports.createCard = (req, res, next) => {
   const ownerId = req.user._id;
 
   Card.create({ name, link, owner: ownerId })
-    .then((card) => res.send({
-      likes: card.likes,
-      _id: card._id,
-      name: card.name,
-      link: card.link,
-      owner: {
-        name: card.owner.name,
-        about: card.owner.about,
-        avatar: card.owner.avatar,
-        _id: card.owner._id,
-      },
-      createdAt: card.createdAt,
-    }))
+    .then((card) => res.send(card))
     .catch((err) => {
       if (err.name === 'ValidationError') {
         next(new BadRequestError('Произошла ошибка: некорректные данные!'));
@@ -56,19 +44,7 @@ module.exports.deleteCard = (req, res, next) => {
           Card.findByIdAndRemove(req.params.cardId)
             .then((delCard) => {
               if (delCard) {
-                res.send({
-                  likes: delCard.likes,
-                  _id: delCard._id,
-                  name: delCard.name,
-                  link: delCard.link,
-                  owner: {
-                    name: delCard.owner.name,
-                    about: delCard.owner.about,
-                    avatar: delCard.owner.avatar,
-                    _id: delCard.owner._id,
-                  },
-                  createdAt: delCard.createdAt,
-                });
+                res.send(delCard);
               }
               next(new NotFoundError('Произошла ошибка: карточка с таким id не найдена!'));
             })

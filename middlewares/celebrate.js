@@ -28,18 +28,6 @@ const validateUserUpdate = celebrate({
 // логин
 const validateUserLogin = celebrate({
   [Segments.BODY]: Joi.object().keys({
-    // email: Joi.string().required().email().error
-    // (new UnAuthoRizedError('Неправильные почта или пароль!')),
-    // email: Joi.string().required().email().error((err, req, res, next) => {
-    //   if (isCelebrate(err)) {
-    //     console.log('from celebrate!');
-    //     return res.send({
-    //       statusCode: 409,
-    //       message: 'Неправильные email или пароль!',
-    //     });
-    //   }
-    //   return next(err);
-    // }),
     email: Joi.string().required().email(),
     password: Joi.string().required().min(8),
   }),
